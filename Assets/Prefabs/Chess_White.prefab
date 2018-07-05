@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4887327589045338}
   - component: {fileID: 212052836310047618}
   m_Layer: 0
-  m_Name: Chess
+  m_Name: Chess_White
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
