@@ -1,16 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IMono
 {
-
     public ChessBoardManager ChessBoardManager { get; private set; }
     public ChessManager ChessManager { get; private set; }
 
+    private bool isWin;
 
-
-    private void Awake()
+    public void OnAwake()
     {
         ChessBoardManager = GameObject.Find("ChessBoard").GetComponent<ChessBoardManager>();
         ChessManager = GameObject.Find("ChessManager").GetComponent<ChessManager>();
@@ -19,16 +19,23 @@ public class Player : MonoBehaviour
         ChessManager.OnAwake();
     }
 
-    public void Update()
+    public void OnStart()
     {
-        PlayerPlayChess();
 
-        ChessManager.OnUpdate();
+    }
+
+    public void OnUpdate()
+    {
+        if (!isWin)
+        {
+            PlayerPlayChess();
+            ChessManager.OnUpdate();
+        }
     }
 
     public void PlayerPlayChess()
     {
-        if (ChessManager.CanPlay && Input.GetMouseButtonDown(0))
+        if (ChessManager.CanPlay && Input.GetMouseButtonDown(0)&&EventSystem.current.IsPointerOverGameObject())
         {
             var p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int pointPos;
@@ -37,12 +44,24 @@ public class Player : MonoBehaviour
                 Vector2 chessPos;
                 if (ChessBoardManager.PointCanPlayChess(pointPos) && ChessBoardManager.GetAxisByPoint(pointPos, out chessPos))
                 {
-                    ChessManager.DoPlayChess(chessPos);
-                    ChessBoardManager.PlayChess(pointPos, ChessManager.NowChessType);
-                    ChessManager.SwitchNowChessType();
+                    var go = ChessManager.DoPlayChess(chessPos);
+                    isWin = ChessBoardManager.PlayChess(pointPos, ChessManager.NowChessType, go);
+                    if (!isWin)
+                    {
+                        ChessManager.SwitchNowChessType();
+                    }
                 }
             }
         }
+    }
+
+
+
+
+
+    public void OnRelease()
+    {
+        throw new System.NotImplementedException();
     }
 
 

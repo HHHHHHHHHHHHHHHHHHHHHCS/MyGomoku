@@ -9,11 +9,26 @@ public enum ChessType
     Black,
 }
 
+public struct ChessInfo
+{
+    public Vector2Int pos;
+    public ChessType chessType;
+    public GameObject go;
+
+    public ChessInfo(Vector2Int _pos, ChessType _chessType,GameObject _go)
+    {
+        pos = _pos;
+        chessType = _chessType;
+        go = _go;
+    }
+}
+
+
 
 /// <summary>
 /// 生产管理棋子
 /// </summary>
-public class ChessManager : AbsMono
+public class ChessManager :MonoBehaviour,IMono
 {
     private const float maxTime = 1;
 
@@ -28,14 +43,18 @@ public class ChessManager : AbsMono
 
     public bool CanPlay { get { return playTimer <= 0; } }
 
-    public override void OnAwake()
+    public void OnAwake()
     {
         NowChessType = ChessType.White;
         playTimer = 0;
         chessParent = transform;// new GameObject("ChessParent").transform;
     }
+    public void OnStart()
+    {
+        
+    }
 
-    public override void OnUpdate()
+    public void OnUpdate()
     {
         if (playTimer > 0)
         {
@@ -43,7 +62,7 @@ public class ChessManager : AbsMono
         }
     }
 
-    public void DoPlayChess(Vector2 chessPos)
+    public GameObject DoPlayChess(Vector2 chessPos)
     {
         GameObject prefab = null;
         if (NowChessType == ChessType.White)
@@ -54,9 +73,9 @@ public class ChessManager : AbsMono
         {
             prefab = blackChess;
         }
-        Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
-
+        var go = Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
         playTimer = maxTime;
+        return go;
     }
 
     public void SwitchNowChessType()
@@ -70,4 +89,11 @@ public class ChessManager : AbsMono
             NowChessType = ChessType.White;
         }
     }
+
+    public void OnRelease()
+    {
+        throw new System.NotImplementedException();
+    }
+
+
 }

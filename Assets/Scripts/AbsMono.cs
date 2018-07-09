@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsMono : MonoBehaviour
+public interface IMono
 {
-    public virtual void OnAwake() { }
-    public virtual void OnUpdate() { }
-    public virtual void DoDesotry() { }
+    void OnAwake();
+    void OnStart();
+    void OnUpdate();
+    void OnRelease();
 }

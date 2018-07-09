@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// 管理棋盘
 /// </summary>
-public class ChessBoardManager : AbsMono
+public class ChessBoardManager : MonoBehaviour,IMono
 {
     public enum MoveDir
     {
@@ -22,6 +22,7 @@ public class ChessBoardManager : AbsMono
         , halfChessScale, offestPos;
 
     private ChessType[,] gridArray;
+    private Stack<ChessInfo> chessInfoStack;
 
     static ChessBoardManager()
     {
@@ -29,9 +30,10 @@ public class ChessBoardManager : AbsMono
         offestPos = new Vector2((-startPos.x + halfChessScale.x) / chessScale.x, (-startPos.y + halfChessScale.y) / chessScale.y);
     }
 
-    public override void OnAwake()
+    public void OnAwake()
     {
         gridArray = new ChessType[chessMaxBoard, chessMaxBoard];
+        chessInfoStack = new Stack<ChessInfo>();
     }
 
     public bool InputAxisToPoint(Vector3 inputPos, out Vector2Int outPos)
@@ -65,10 +67,13 @@ public class ChessBoardManager : AbsMono
         return gridArray[inputPos.x, inputPos.y] == ChessType.None;
     }
 
-    public bool PlayChess(Vector2Int inputPos, ChessType _chess)
+    public bool PlayChess(Vector2Int _inputPos, ChessType _chess, GameObject _go)
     {
-        gridArray[inputPos.x, inputPos.y] = _chess;
-        return CheckWineer(inputPos, _chess);
+        gridArray[_inputPos.x, _inputPos.y] = _chess;
+        ChessInfo info = new ChessInfo(_inputPos, _chess, _go);
+        chessInfoStack.Push(info);
+        MainGameManager.Instance.MainUIManager.SetRetractButton();
+        return CheckWineer(_inputPos, _chess);
     }
 
     public bool CheckWineer(Vector2Int inputPos, ChessType _chess)
@@ -122,5 +127,39 @@ public class ChessBoardManager : AbsMono
             }
         }
         return chessNumber >= 5;
+    }
+
+    public bool CanRetractChess()
+    {
+        return chessInfoStack.Count > 1;
+    }
+
+    public bool RetractChess()
+    {
+        if (CanRetractChess())
+        {
+            var item = chessInfoStack.Pop();
+            Destroy(item.go);
+            gridArray[item.pos.x, item.pos.y] = ChessType.None;
+            item = chessInfoStack.Pop();
+            Destroy(item.go);
+            gridArray[item.pos.x, item.pos.y] = ChessType.None;
+        }
+        return false;
+    }
+
+    public void OnUpdate()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnRelease()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnStart()
+    {
+        throw new System.NotImplementedException();
     }
 }
