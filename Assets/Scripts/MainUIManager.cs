@@ -32,7 +32,7 @@ public class MainUIManager : MonoBehaviour,IMono
 
     public void SetRetractButton()
     {
-        bool isCan= MainGameManager.Instance.Player.ChessBoardManager.CanRetractChess();
+        bool isCan= MainGameManager.Instance.ChessBoardManager.CanRetractChess();
         if (retractButton.interactable!= isCan)
         {
             retractButton.interactable = isCan;
@@ -41,7 +41,7 @@ public class MainUIManager : MonoBehaviour,IMono
 
     public void OnClickRetractButton()
     {
-        MainGameManager.Instance.Player.ChessBoardManager.RetractChess();
+        MainGameManager.Instance.ChessBoardManager.RetractChess();
         SetRetractButton();
     }
 

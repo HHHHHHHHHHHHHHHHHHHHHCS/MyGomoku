@@ -15,7 +15,7 @@ public struct ChessInfo
     public ChessType chessType;
     public GameObject go;
 
-    public ChessInfo(Vector2Int _pos, ChessType _chessType,GameObject _go)
+    public ChessInfo(Vector2Int _pos, ChessType _chessType, GameObject _go)
     {
         pos = _pos;
         chessType = _chessType;
@@ -28,7 +28,7 @@ public struct ChessInfo
 /// <summary>
 /// 生产管理棋子
 /// </summary>
-public class ChessManager :MonoBehaviour,IMono
+public class ChessManager : MonoBehaviour, IMono
 {
     private const float maxTime = 1;
 
@@ -37,7 +37,7 @@ public class ChessManager :MonoBehaviour,IMono
     [SerializeField]
     private GameObject blackChess;
 
-    public ChessType NowChessType { get; private set; }
+    public ChessType NowChessType { get; set; }
     private float playTimer;
     private Transform chessParent;
 
@@ -45,13 +45,13 @@ public class ChessManager :MonoBehaviour,IMono
 
     public void OnAwake()
     {
-        NowChessType = ChessType.White;
         playTimer = 0;
         chessParent = transform;// new GameObject("ChessParent").transform;
     }
+
     public void OnStart()
     {
-        
+        NowChessType = MainGameManager.Instance.NowPlayer.ChessType;
     }
 
     public void OnUpdate()
@@ -76,18 +76,6 @@ public class ChessManager :MonoBehaviour,IMono
         var go = Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
         playTimer = maxTime;
         return go;
-    }
-
-    public void SwitchNowChessType()
-    {
-        if (NowChessType == ChessType.White)
-        {
-            NowChessType = ChessType.Black;
-        }
-        else if (NowChessType == ChessType.Black)
-        {
-            NowChessType = ChessType.White;
-        }
     }
 
     public void OnRelease()

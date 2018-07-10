@@ -10,18 +10,18 @@ public class ChessBoardManager : MonoBehaviour,IMono
 {
     public enum MoveDir
     {
-        TransverseLine,
+        TransverseLine=0,
         VerticalLine,
         LeftSlantLine,
         RightSlantLine,
     }
 
 
-    private const int chessMaxBoard = 15;
+    public const int chessMaxBoard = 15;
     private static readonly Vector2 startPos = new Vector2(-6.58f, -6.45f), chessScale = new Vector2(0.95f, 0.95f)
         , halfChessScale, offestPos;
 
-    private ChessType[,] gridArray;
+    public ChessType[,] GridArray { get; private set; }
     private Stack<ChessInfo> chessInfoStack;
 
     static ChessBoardManager()
@@ -32,7 +32,7 @@ public class ChessBoardManager : MonoBehaviour,IMono
 
     public void OnAwake()
     {
-        gridArray = new ChessType[chessMaxBoard, chessMaxBoard];
+        GridArray = new ChessType[chessMaxBoard, chessMaxBoard];
         chessInfoStack = new Stack<ChessInfo>();
     }
 
@@ -64,12 +64,12 @@ public class ChessBoardManager : MonoBehaviour,IMono
 
     public bool PointCanPlayChess(Vector2Int inputPos)
     {
-        return gridArray[inputPos.x, inputPos.y] == ChessType.None;
+        return GridArray[inputPos.x, inputPos.y] == ChessType.None;
     }
 
     public bool PlayChess(Vector2Int _inputPos, ChessType _chess, GameObject _go)
     {
-        gridArray[_inputPos.x, _inputPos.y] = _chess;
+        GridArray[_inputPos.x, _inputPos.y] = _chess;
         ChessInfo info = new ChessInfo(_inputPos, _chess, _go);
         chessInfoStack.Push(info);
         MainGameManager.Instance.MainUIManager.SetRetractButton();
@@ -116,7 +116,7 @@ public class ChessBoardManager : MonoBehaviour,IMono
             for (int i = 1; i < chessMaxBoard; i++)
             {
                 Vector2Int newPoint = new Vector2Int(inputPos.x + dir * xDir * i, inputPos.y + dir * yDir * i);
-                if (CheckBorder(newPoint) && gridArray[newPoint.x, newPoint.y] == _chess)
+                if (CheckBorder(newPoint) && GridArray[newPoint.x, newPoint.y] == _chess)
                 {
                     chessNumber++;
                 }
@@ -140,10 +140,10 @@ public class ChessBoardManager : MonoBehaviour,IMono
         {
             var item = chessInfoStack.Pop();
             Destroy(item.go);
-            gridArray[item.pos.x, item.pos.y] = ChessType.None;
+            GridArray[item.pos.x, item.pos.y] = ChessType.None;
             item = chessInfoStack.Pop();
             Destroy(item.go);
-            gridArray[item.pos.x, item.pos.y] = ChessType.None;
+            GridArray[item.pos.x, item.pos.y] = ChessType.None;
         }
         return false;
     }

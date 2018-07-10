@@ -5,50 +5,51 @@ using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour, IMono
 {
-    public ChessBoardManager ChessBoardManager { get; private set; }
-    public ChessManager ChessManager { get; private set; }
+    protected static MainGameManager mainGameManager;
+    protected static ChessManager chessManager;
+    protected static ChessBoardManager chessBoardManager;
 
-    private bool isWin;
+    public ChessType ChessType { get; protected set; }
 
-    public void OnAwake()
+    public virtual void OnAwake()
     {
-        ChessBoardManager = GameObject.Find("ChessBoard").GetComponent<ChessBoardManager>();
-        ChessManager = GameObject.Find("ChessManager").GetComponent<ChessManager>();
-
-        ChessBoardManager.OnAwake();
-        ChessManager.OnAwake();
+        ChessType = ChessType.White;
     }
 
-    public void OnStart()
+    public virtual void OnStart()
     {
-
-    }
-
-    public void OnUpdate()
-    {
-        if (!isWin)
+        if(mainGameManager==null)
         {
-            PlayerPlayChess();
-            ChessManager.OnUpdate();
+            mainGameManager = MainGameManager.Instance;
+            chessBoardManager = MainGameManager.Instance.ChessBoardManager;
+            chessManager = MainGameManager.Instance.ChessManager;
         }
     }
 
-    public void PlayerPlayChess()
+    public virtual void OnUpdate()
     {
-        if (ChessManager.CanPlay && Input.GetMouseButtonDown(0)&&EventSystem.current.IsPointerOverGameObject())
+        PlayerPlayChess();
+    }
+
+    public virtual void PlayerPlayChess()
+    {
+        if (chessManager.CanPlay && Input.GetMouseButtonDown(0)&&EventSystem.current.IsPointerOverGameObject())
         {
             var p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int pointPos;
-            if (ChessBoardManager.InputAxisToPoint(p, out pointPos))
+            if (chessBoardManager.InputAxisToPoint(p, out pointPos))
             {
                 Vector2 chessPos;
-                if (ChessBoardManager.PointCanPlayChess(pointPos) && ChessBoardManager.GetAxisByPoint(pointPos, out chessPos))
+                if (chessBoardManager.PointCanPlayChess(pointPos) && chessBoardManager.GetAxisByPoint(pointPos, out chessPos))
                 {
-                    var go = ChessManager.DoPlayChess(chessPos);
-                    isWin = ChessBoardManager.PlayChess(pointPos, ChessManager.NowChessType, go);
-                    if (!isWin)
+                    var go = chessManager.DoPlayChess(chessPos);
+                    if( chessBoardManager.PlayChess(pointPos, ChessType, go))
                     {
-                        ChessManager.SwitchNowChessType();
+                        mainGameManager.WinGame();
+                    }
+                    else
+                    {
+                        mainGameManager.SwitchNowPlayer();
                     }
                 }
             }
