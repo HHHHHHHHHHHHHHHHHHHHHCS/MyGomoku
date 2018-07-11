@@ -33,8 +33,9 @@ public class Player : MonoBehaviour, IMono
 
     public virtual void PlayerPlayChess()
     {
-        if (chessManager.CanPlay && Input.GetMouseButtonDown(0)&&EventSystem.current.IsPointerOverGameObject())
+        if (chessManager.CanPlay && Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())
         {
+
             var p = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int pointPos;
             if (chessBoardManager.InputAxisToPoint(p, out pointPos))
@@ -43,7 +44,7 @@ public class Player : MonoBehaviour, IMono
                 if (chessBoardManager.PointCanPlayChess(pointPos) && chessBoardManager.GetAxisByPoint(pointPos, out chessPos))
                 {
                     var go = chessManager.DoPlayChess(chessPos);
-                    if( chessBoardManager.PlayChess(pointPos, ChessType, go))
+                    if(chessBoardManager.PlayChess(pointPos, ChessType, go))
                     {
                         mainGameManager.WinGame();
                     }

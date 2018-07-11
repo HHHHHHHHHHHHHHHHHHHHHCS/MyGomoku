@@ -64,7 +64,7 @@ public class ChessManager : MonoBehaviour, IMono
 
     public GameObject DoPlayChess(Vector2 chessPos)
     {
-        GameObject prefab = null;
+        GameObject prefab = null,go=null;
         if (NowChessType == ChessType.White)
         {
             prefab = whiteChess;
@@ -73,8 +73,11 @@ public class ChessManager : MonoBehaviour, IMono
         {
             prefab = blackChess;
         }
-        var go = Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
-        playTimer = maxTime;
+        if(prefab != null)
+        {
+            go = Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
+            playTimer = maxTime;
+        }
         return go;
     }
 

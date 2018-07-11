@@ -22,7 +22,7 @@ public class ChessBoardManager : MonoBehaviour,IMono
         , halfChessScale, offestPos;
 
     public ChessType[,] GridArray { get; private set; }
-    private Stack<ChessInfo> chessInfoStack;
+    public Stack<ChessInfo> chessInfoStack { get; private set; }
 
     static ChessBoardManager()
     {

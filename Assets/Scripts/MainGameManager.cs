@@ -21,13 +21,14 @@ public class MainGameManager : MonoBehaviour
         ChessBoardManager = GameObject.Find("ChessBoard").GetComponent<ChessBoardManager>();
         ChessManager = GameObject.Find("ChessManager").GetComponent<ChessManager>();
         MainUIManager = GameObject.Find("UIRoot").GetComponent<MainUIManager>();
-        Player1 = GameObject.Find("MainGameManager").GetComponent<Player>();
-
+        Player1 = GameObject.Find("Player").GetComponent<Player>();
+        Player2 = GameObject.Find("AILevelOne").GetComponent<AILevelOne>();
 
         ChessBoardManager.OnAwake();
         ChessManager.OnAwake();
         MainUIManager.OnAwake();
         Player1.OnAwake();
+        Player2.OnAwake();
 
         NowPlayer = Player1;
     }
@@ -36,6 +37,8 @@ public class MainGameManager : MonoBehaviour
     {
         MainUIManager.OnStart();
         ChessManager.OnStart();
+        Player1.OnStart();
+        Player2.OnStart();
     }
 
     private void Update()
@@ -43,7 +46,7 @@ public class MainGameManager : MonoBehaviour
         if(!IsWin)
         {
             NowPlayer.OnUpdate();
-            ChessBoardManager.OnUpdate();
+            ChessManager.OnUpdate();
         }
     }
 

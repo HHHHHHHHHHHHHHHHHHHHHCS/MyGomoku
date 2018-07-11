@@ -5,8 +5,7 @@ using UnityEngine.EventSystems;
 
 public class AILevelOne : Player
 {
-    private Dictionary<string, int> scoreDic = new Dictionary<string, int>();
-    private int[,] score;
+    private Dictionary<string, int> scoreDic;
     private int chessMaxBoard = ChessBoardManager.chessMaxBoard;
 
 
@@ -15,12 +14,11 @@ public class AILevelOne : Player
         ChessType = ChessType.Black;
     }
 
-
     public override void OnStart()
     {
         base.OnStart();
+        scoreDic = new Dictionary<string, int>();
         chessMaxBoard = ChessBoardManager.chessMaxBoard;
-        score = new int[chessMaxBoard, chessMaxBoard];
 
         //1为是自己的棋子  2为别人的棋子   0为空地
         scoreDic.Add("0110", 100);
@@ -35,21 +33,23 @@ public class AILevelOne : Player
         scoreDic.Add("11110", 5000);
         scoreDic.Add("01111", 5000);
 
-        scoreDic.Add("11111", 2147483600);
-        scoreDic.Add("011110", 2147483600);
-        scoreDic.Add("111110", 2147483600);
-        scoreDic.Add("011111", 2147483600);
+        scoreDic.Add("11111", 10000000);
+        scoreDic.Add("0111110", 10000000);
+        scoreDic.Add("111110", 10000000);
+        scoreDic.Add("011111", 10000000);
     }
 
     public override void OnUpdate()
     {
-
+        PlayerPlayChess();
     }
 
-    public int SetCheckScore(Vector2Int inputPos)
+    public int SetCheckScore(int x, int y,ChessType chessType)
     {
+        Vector2Int inputPos = new Vector2Int(x, y);
         int score = 0;
-        for(int md = 0; md < 4; md++)
+
+        for (int md = 0; md < 4; md++)
         {
             ChessBoardManager.MoveDir _moveDir = (ChessBoardManager.MoveDir)md;
             string str = "1";
@@ -80,7 +80,7 @@ public class AILevelOne : Player
                     if (chessBoardManager.CheckBorder(newPoint))
                     {
                         string ch;
-                        if (chessBoardManager.GridArray[newPoint.x, newPoint.y] == ChessType)
+                        if (chessBoardManager.GridArray[newPoint.x, newPoint.y] == chessType)
                         {
                             ch = "1";
                         }
@@ -100,6 +100,10 @@ public class AILevelOne : Player
                         {
                             str = str + ch;
                         }
+                        if(ch=="0")
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -107,13 +111,71 @@ public class AILevelOne : Player
                     }
                 }
             }
-
+            if(chessType== ChessType.White)
+            {
+                Debug.LogFormat("x:{0},y:{1},string:{2}", x, y, str);
+            }
             int _s;
-            if (scoreDic.TryGetValue(str,out _s))
+            if (scoreDic.TryGetValue(str, out _s))
             {
                 score += _s;
             }
         }
+
+
         return score;
+    }
+
+    public override void PlayerPlayChess()
+    {
+        if (chessBoardManager.chessInfoStack.Count == 0)
+        {
+            AIPlayChess(7, 7);
+        }
+        else
+        {
+            int maxX = 0, maxY = 0;
+            float maxScore = -1;
+
+            for (int x = 0; x < chessMaxBoard; x++)
+            {
+                for (int y = 0; y < chessMaxBoard; y++)
+                {
+                    if ((chessBoardManager.GridArray[x, y] == ChessType.None))
+                    {
+                        float newScore = SetCheckScore(x, y,ChessType);
+                        float newEnemyScore = SetCheckScore(x, y, ChessType== ChessType.Black? ChessType.White: ChessType.Black);
+
+                        newScore += 1.5f * newEnemyScore;
+                        if (newScore >= maxScore)
+                        {
+                            maxX = x;
+                            maxY = y;
+                            maxScore = newScore;
+                        }
+                    }
+                }
+            }
+
+            AIPlayChess(maxX, maxY);
+        }
+    }
+
+    public virtual void AIPlayChess(int x, int y)
+    {
+        Vector2Int pointPos = new Vector2Int(x, y);
+        Vector2 chessPos;
+        if (chessBoardManager.PointCanPlayChess(pointPos) && chessBoardManager.GetAxisByPoint(pointPos, out chessPos))
+        {
+            var go = chessManager.DoPlayChess(chessPos);
+            if (chessBoardManager.PlayChess(pointPos, ChessType, go))
+            {
+                mainGameManager.WinGame();
+            }
+            else
+            {
+                mainGameManager.SwitchNowPlayer();
+            }
+        }
     }
 }
