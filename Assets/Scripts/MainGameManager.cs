@@ -22,7 +22,7 @@ public class MainGameManager : MonoBehaviour
         ChessManager = GameObject.Find("ChessManager").GetComponent<ChessManager>();
         MainUIManager = GameObject.Find("UIRoot").GetComponent<MainUIManager>();
         Player1 = GameObject.Find("Player").GetComponent<Player>();
-        Player2 = GameObject.Find("AILevelOne").GetComponent<AILevelOne>();
+        Player2 = GameObject.Find("AI").GetComponent<AILevelTwo>();
 
         ChessBoardManager.OnAwake();
         ChessManager.OnAwake();

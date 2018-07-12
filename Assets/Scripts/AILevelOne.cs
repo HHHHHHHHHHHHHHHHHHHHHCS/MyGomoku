@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 
 public class AILevelOne : Player
 {
-    private Dictionary<string, int> scoreDic;
-    private int chessMaxBoard = ChessBoardManager.chessMaxBoard;
+    protected Dictionary<string, int> scoreDic;
+    protected int chessMaxBoard = ChessBoardManager.chessMaxBoard;
 
 
     public override void OnAwake()
@@ -20,6 +20,11 @@ public class AILevelOne : Player
         scoreDic = new Dictionary<string, int>();
         chessMaxBoard = ChessBoardManager.chessMaxBoard;
 
+        OnInitScoreDic();
+    }
+
+    protected virtual void OnInitScoreDic()
+    {
         //1为是自己的棋子  2为别人的棋子   0为空地
         scoreDic.Add("0110", 100);
         scoreDic.Add("110", 50);
@@ -33,10 +38,10 @@ public class AILevelOne : Player
         scoreDic.Add("11110", 5000);
         scoreDic.Add("01111", 5000);
 
-        scoreDic.Add("11111", 10000000);
-        scoreDic.Add("0111110", 10000000);
-        scoreDic.Add("111110", 10000000);
-        scoreDic.Add("011111", 10000000);
+        scoreDic.Add("11111", 100000000);
+        scoreDic.Add("0111110", 100000000);
+        scoreDic.Add("111110", 100000000);
+        scoreDic.Add("011111", 100000000);
     }
 
     public override void OnUpdate()
@@ -44,7 +49,7 @@ public class AILevelOne : Player
         PlayerPlayChess();
     }
 
-    public int SetCheckScore(int x, int y,ChessType chessType)
+    public virtual int SetCheckScore(int x, int y, ChessType chessType)
     {
         Vector2Int inputPos = new Vector2Int(x, y);
         int score = 0;
@@ -100,7 +105,7 @@ public class AILevelOne : Player
                         {
                             str = str + ch;
                         }
-                        if(ch=="0")
+                        if (ch == "0")
                         {
                             break;
                         }
@@ -111,10 +116,7 @@ public class AILevelOne : Player
                     }
                 }
             }
-            if(chessType== ChessType.White)
-            {
-                Debug.LogFormat("x:{0},y:{1},string:{2}", x, y, str);
-            }
+
             int _s;
             if (scoreDic.TryGetValue(str, out _s))
             {
@@ -136,16 +138,15 @@ public class AILevelOne : Player
         {
             int maxX = 0, maxY = 0;
             float maxScore = -1;
-
-            for (int x = 0; x < chessMaxBoard; x++)
+            for (int y = 0; y < chessMaxBoard; y++)
             {
-                for (int y = 0; y < chessMaxBoard; y++)
+                for (int x = 0; x < chessMaxBoard; x++)
                 {
-                    if ((chessBoardManager.GridArray[x, y] == ChessType.None))
-                    {
-                        float newScore = SetCheckScore(x, y,ChessType);
-                        float newEnemyScore = SetCheckScore(x, y, ChessType== ChessType.Black? ChessType.White: ChessType.Black);
 
+                    if (chessBoardManager.GridArray[x, y] == ChessType.None)
+                    {
+                        float newScore = SetCheckScore(x, y, ChessType);
+                        float newEnemyScore = SetCheckScore(x, y, ChessType == ChessType.Black ? ChessType.White : ChessType.Black);
                         newScore += 1.5f * newEnemyScore;
                         if (newScore >= maxScore)
                         {
