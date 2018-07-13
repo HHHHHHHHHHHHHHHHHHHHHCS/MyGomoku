@@ -76,7 +76,7 @@ public class AILevelTwo : AILevelOne
                     break;
             }
 
-            bool leftStop = false, rightStop = false,lastLeftPos=true;
+            bool nextLeft = false,nextRight=false, leftStop = false, rightStop = false,lastLeftPos=true;
             int count = 1,maxCont = 6;
             for (int i = 1; i < chessMaxBoard; i++)
             {
@@ -87,6 +87,10 @@ public class AILevelTwo : AILevelOne
 
                 for (int dir = -1; dir <= 1; dir += 2)
                 {
+                    if((nextLeft &&dir>0) || (nextRight &&dir<0))
+                    {
+                        continue;
+                    }
                     if ((dir < 0 && leftStop) || (dir > 0 && rightStop))
                     {
                         continue;
@@ -95,6 +99,7 @@ public class AILevelTwo : AILevelOne
                     {
                         break;
                     }
+
                     Vector2Int newPoint = new Vector2Int(inputPos.x + dir * xDir * i, inputPos.y + dir * yDir * i);
                     if (chessBoardManager.CheckBorder(newPoint))
                     {
@@ -123,11 +128,19 @@ public class AILevelTwo : AILevelOne
                         {
                             lastLeftPos = true;
                             str = ch + str;
+                            if(ch=="1")
+                            {
+                                nextLeft = true;
+                            }
                         }
                         else if (dir > 0)
                         {
                             lastLeftPos = false;
                             str = str + ch;
+                            if (ch == "1")
+                            {
+                                nextRight = true;
+                            }
                         }
                         count++;
                     }
