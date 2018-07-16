@@ -13,8 +13,9 @@ public class MiniMaxNode
 
 public class AILevelThree : AILevelTwo
 {
-    private List<MiniMaxNode> GetList(int[,] grid,ChessType chessType ,bool isSelf)
+    private List<MiniMaxNode> GetList(ChessType[,] grid,ChessType chessType)
     {
+        bool isSelf = chessType == ChessType;
         List<MiniMaxNode> nodelist = new List<MiniMaxNode>();
         MiniMaxNode node;
         for (int y=0;y<ChessBoardManager.chessMaxBoard;y++)
@@ -22,7 +23,7 @@ public class AILevelThree : AILevelTwo
             for (int x = 0; x < ChessBoardManager.chessMaxBoard; x++)
             {
 
-                if (grid[x, y] != 0)
+                if (grid[x, y] !=   ChessType.None)
                 {
                     continue;
                 }
