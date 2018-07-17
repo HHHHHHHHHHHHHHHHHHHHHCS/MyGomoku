@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class AILevelOne : Player
 {
+    protected const int maxScore = 100000000;
+
     protected Dictionary<string, int> scoreDic;
     protected int chessMaxBoard = ChessBoardManager.chessMaxBoard;
 
@@ -38,10 +40,10 @@ public class AILevelOne : Player
         scoreDic.Add("11110", 5000);
         scoreDic.Add("01111", 5000);
 
-        scoreDic.Add("11111", 100000000);
-        scoreDic.Add("0111110", 100000000);
-        scoreDic.Add("111110", 100000000);
-        scoreDic.Add("011111", 100000000);
+        scoreDic.Add("11111", maxScore);
+        scoreDic.Add("0111110", maxScore);
+        scoreDic.Add("111110", maxScore);
+        scoreDic.Add("011111", maxScore);
     }
 
     public override void OnUpdate()

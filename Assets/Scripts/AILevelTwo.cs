@@ -46,11 +46,15 @@ public class AILevelTwo : AILevelOne
 
         scoreDic.Add("011110", 1000000);                 //活四
 
-        scoreDic.Add("11111", 100000000);           //连五
+        scoreDic.Add("11111", maxScore);           //连五
     }
 
-
     public override int SetCheckScore(int x, int y, ChessType chessType)
+    {
+        return SetCheckScore(chessBoardManager.GridArray, x, y, chessType);
+    }
+
+    public int SetCheckScore(ChessType[,] gridArray, int x, int y, ChessType chessType)
     {
         Vector2Int inputPos = new Vector2Int(x, y);
         int score = 0;
@@ -78,8 +82,8 @@ public class AILevelTwo : AILevelOne
                     break;
             }
 
-            bool nextLeft = false,nextRight=false, leftStop = false, rightStop = false,lastLeftPos=true;
-            int count = 1,maxCont = 6;
+            bool nextLeft = false, nextRight = false, leftStop = false, rightStop = false, lastLeftPos = true;
+            int count = 1, maxCont = 6;
             for (int i = 1; i < chessMaxBoard; i++)
             {
                 if ((leftStop && rightStop) || count >= maxCont)
@@ -89,7 +93,7 @@ public class AILevelTwo : AILevelOne
 
                 for (int dir = -1; dir <= 1; dir += 2)
                 {
-                    if((nextLeft &&dir>0) || (nextRight &&dir<0))
+                    if ((nextLeft && dir > 0) || (nextRight && dir < 0))
                     {
                         continue;
                     }
@@ -106,11 +110,11 @@ public class AILevelTwo : AILevelOne
                     if (chessBoardManager.CheckBorder(newPoint))
                     {
                         string ch;
-                        if (chessBoardManager.GridArray[newPoint.x, newPoint.y] == chessType)
+                        if (gridArray[newPoint.x, newPoint.y] == chessType)
                         {
                             ch = "1";
                         }
-                        else if (chessBoardManager.GridArray[newPoint.x, newPoint.y] == ChessType.None)
+                        else if (gridArray[newPoint.x, newPoint.y] == ChessType.None)
                         {
                             ch = "0";
                         }
@@ -130,7 +134,7 @@ public class AILevelTwo : AILevelOne
                         {
                             lastLeftPos = true;
                             str = ch + str;
-                            if(ch=="1")
+                            if (ch == "1")
                             {
                                 nextLeft = true;
                             }
@@ -154,10 +158,6 @@ public class AILevelTwo : AILevelOne
             }
 
             int _s;
-            if (chessType == ChessType.White)
-            {
-                Debug.LogFormat("x:{0},y:{1},string:{2}", x, y, str);
-            }
             if (count <= 5)
             {
                 if (scoreDic.TryGetValue(str, out _s))
@@ -173,7 +173,7 @@ public class AILevelTwo : AILevelOne
                 }
                 else
                 {
-                    str = str.Substring(lastLeftPos?0:1, 5);
+                    str = str.Substring(lastLeftPos ? 0 : 1, 5);
                     if (scoreDic.TryGetValue(str, out _s))
                     {
                         score += _s;
