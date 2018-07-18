@@ -28,10 +28,10 @@ public class Player : MonoBehaviour, IMono
 
     public virtual void OnUpdate()
     {
-        PlayerPlayChess();
+        PlayChess();
     }
 
-    public virtual void PlayerPlayChess()
+    public virtual void PlayChess()
     {
         if (chessManager.CanPlay && Input.GetMouseButtonDown(0)&&!EventSystem.current.IsPointerOverGameObject())
         {

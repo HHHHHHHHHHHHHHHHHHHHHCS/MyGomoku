@@ -48,7 +48,7 @@ public class AILevelOne : Player
 
     public override void OnUpdate()
     {
-        PlayerPlayChess();
+        PlayChess();
     }
 
     public virtual int SetCheckScore(int x, int y, ChessType chessType)
@@ -130,7 +130,7 @@ public class AILevelOne : Player
         return score;
     }
 
-    public override void PlayerPlayChess()
+    public override void PlayChess()
     {
         if (chessBoardManager.chessInfoStack.Count == 0)
         {
