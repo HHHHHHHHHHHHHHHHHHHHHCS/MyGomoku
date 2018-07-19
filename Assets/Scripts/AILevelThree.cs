@@ -222,6 +222,7 @@ public class AILevelThree : AILevelOne
                 node = new MiniMaxNode();
                 node.pos = pos;
                 node.chess = chess;
+                node.child = new List<MiniMaxNode>();
                 if (mySelf)
                     node.value = GetScore(grid, pos);
                 else

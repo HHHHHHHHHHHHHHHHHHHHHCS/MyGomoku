@@ -12,10 +12,11 @@ public class MainGameManager : MonoBehaviour
     public ChessBoardManager ChessBoardManager { get; private set; }
     public ChessManager ChessManager { get; private set; }
 
+    public bool IsStart { get; private set; }
     public bool IsWin { get; private set; }
     public Player NowPlayer { get; private set; }
 
-    public void Awake()
+    private void Awake()
     {
         Instance = this;
         ChessBoardManager = GameObject.Find("ChessBoard").GetComponent<ChessBoardManager>();
@@ -33,7 +34,7 @@ public class MainGameManager : MonoBehaviour
         NowPlayer = Player1;
     }
 
-    public void Start()
+    private void Start()
     {
         MainUIManager.OnStart();
         ChessManager.OnStart();
@@ -43,17 +44,22 @@ public class MainGameManager : MonoBehaviour
 
     private void Update()
     {
-        if(!IsWin)
+        if(IsStart && !IsWin)
         {
             NowPlayer.OnUpdate();
             ChessManager.OnUpdate();
         }
     }
 
+    public void StartGame()
+    {
+        IsStart = true;
+    }
 
     public void WinGame()
     {
         IsWin = true;
+        MainUIManager.EndGame(ChessManager.NowChessType);
     }
 
     public void SwitchNowPlayer()
