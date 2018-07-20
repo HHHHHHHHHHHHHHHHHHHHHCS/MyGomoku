@@ -36,10 +36,13 @@ public class ChessManager : MonoBehaviour, IMono
     private GameObject whiteChess;
     [SerializeField]
     private GameObject blackChess;
+    [SerializeField]
+    private GameObject redMarkPrefab;
 
     public ChessType NowChessType { get; set; }
     private float playTimer;
     private Transform chessParent;
+    private Transform redMark;
 
     public bool CanPlay { get { return playTimer <= 0; } }
 
@@ -76,6 +79,7 @@ public class ChessManager : MonoBehaviour, IMono
         if(prefab != null)
         {
             go = Instantiate(prefab, chessPos, Quaternion.identity, chessParent);
+            ChangeRedMark(chessPos);
             playTimer = maxTime;
         }
         return go;
@@ -84,6 +88,18 @@ public class ChessManager : MonoBehaviour, IMono
     public void OnRelease()
     {
         throw new System.NotImplementedException();
+    }
+
+    private void ChangeRedMark(Vector3 pos)
+    {
+        if(redMark==null)
+        {
+            redMark = Instantiate(redMarkPrefab, pos, Quaternion.identity).transform;
+        }
+        else
+        {
+            redMark.transform.position = pos;
+        }
     }
 
 

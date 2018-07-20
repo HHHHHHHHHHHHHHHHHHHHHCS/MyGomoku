@@ -11,11 +11,6 @@ public class AILevelOne : Player
     protected int chessMaxBoard = ChessBoardManager.chessMaxBoard;
 
 
-    public override void OnAwake()
-    {
-        ChessType = ChessType.Black;
-    }
-
     public override void OnStart()
     {
         base.OnStart();

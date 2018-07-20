@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour, IMono
+public class Player :  IMono
 {
     protected static MainGameManager mainGameManager;
     protected static ChessManager chessManager;
@@ -11,9 +11,16 @@ public class Player : MonoBehaviour, IMono
 
     public ChessType ChessType { get; protected set; }
 
+    public virtual Player OnInit(ChessType _chessType)
+    {
+        ChessType = _chessType;
+
+        return this;
+    }
+
     public virtual void OnAwake()
     {
-        ChessType = ChessType.White;
+
     }
 
     public virtual void OnStart()

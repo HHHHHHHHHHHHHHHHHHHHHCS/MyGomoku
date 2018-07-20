@@ -22,8 +22,40 @@ public class MainGameManager : MonoBehaviour
         ChessBoardManager = GameObject.Find("ChessBoard").GetComponent<ChessBoardManager>();
         ChessManager = GameObject.Find("ChessManager").GetComponent<ChessManager>();
         MainUIManager = GameObject.Find("UIRoot").GetComponent<MainUIManager>();
-        Player1 = GameObject.Find("Player").GetComponent<Player>();
-        Player2 = GameObject.Find("AI").GetComponent<AILevelThree>();
+
+        switch (PlayerInfo.gameModel)
+        {
+            case PlayerInfo.GameModel.ManMachine:
+                bool playerFirst = PlayerInfo.isPlayerFirst;
+                Player1 = new Player().OnInit(playerFirst ? ChessType.White: ChessType.Black);
+                switch (PlayerInfo.aiLevel)
+                {
+                    case PlayerInfo.AILevel.Primary:
+                        Player2 = new AILevelOne();
+                        break;
+                    case PlayerInfo.AILevel.Intermediate:
+                        Player2 = new AILevelTwo();
+                        break;
+                    case PlayerInfo.AILevel.Senior:
+                        Player2 = new AILevelThree();
+                        break;
+                    default:
+                        break;
+                }
+                Player2.OnInit(playerFirst ? ChessType.Black : ChessType.White);
+                NowPlayer = playerFirst? Player1:Player2;
+                break;
+            case PlayerInfo.GameModel.DoubleMan:
+                Player1 = new Player().OnInit(ChessType.White);
+                Player2 = new Player().OnInit(ChessType.Black);
+                NowPlayer = Player1;
+                break;
+            case PlayerInfo.GameModel.Net:
+                Debug.Log("还没有做");
+                break;
+            default:
+                break;
+        }
 
         ChessBoardManager.OnAwake();
         ChessManager.OnAwake();
@@ -31,7 +63,7 @@ public class MainGameManager : MonoBehaviour
         Player1.OnAwake();
         Player2.OnAwake();
 
-        NowPlayer = Player1;
+
     }
 
     private void Start()

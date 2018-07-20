@@ -8,28 +8,36 @@ public class MainUIManager : MonoBehaviour,IMono
     private Transform startAnimPanel;
     private Transform gameingPanel;
     private Transform endPanel;
+    private Text whoFirstText;
     private Text whoWinText;
-    private Button startButton;
     private Button retractButton;
-    private Button backButton;
-    private Button restartButton;
 
     public void OnAwake()
     {
         Transform root = transform;
         startAnimPanel = root.Find("StartAnimPanel");
-        startButton = startAnimPanel.Find("StartButton").GetComponent<Button>();
+        whoFirstText = startAnimPanel.Find("WhoFirstText").GetComponent<Text>();
+        Button startButton = startAnimPanel.Find("StartButton").GetComponent<Button>();
+        Button changeFirstButton = startAnimPanel.Find("ChangeFirstButton").GetComponent<Button>();
         gameingPanel = root.Find("GameingPanel");
         retractButton = gameingPanel.Find("RetractButton").GetComponent<Button>();
         endPanel = root.Find("EndPanel");
         whoWinText=endPanel.Find("WhoWinText").GetComponent<Text>();
-        backButton = endPanel.Find("BackButton").GetComponent<Button>();
-        restartButton = endPanel.Find("RestartButton").GetComponent<Button>();
+        Button backButton = endPanel.Find("BackButton").GetComponent<Button>();
+        Button restartButton = endPanel.Find("RestartButton").GetComponent<Button>();
 
         startButton.onClick.AddListener(OnClickStartButton);
         retractButton.onClick.AddListener(OnClickRetractButton);
+        changeFirstButton.onClick.AddListener(OnClickChangeFirstButton);
         //backButton.onClick.AddListener(OnClickRetractButton);
         //restartButton.onClick.AddListener(OnClickRetractButton);
+
+        if(PlayerInfo.gameModel!= PlayerInfo.GameModel.ManMachine)
+        {
+            whoFirstText.gameObject.SetActive(false);
+            changeFirstButton.gameObject.SetActive(false);
+        }
+
     }
 
     public void OnStart()
@@ -55,6 +63,13 @@ public class MainUIManager : MonoBehaviour,IMono
             retractButton.interactable = isCan;
         }
     }
+
+    public void OnClickChangeFirstButton()
+    {
+        PlayerInfo.isPlayerFirst = !PlayerInfo.isPlayerFirst;
+        whoFirstText.text = PlayerInfo.isPlayerFirst ? "玩家先手" : "电脑先手";
+    }
+
 
     public void OnClickStartButton()
     {
