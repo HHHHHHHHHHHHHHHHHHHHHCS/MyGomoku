@@ -131,6 +131,11 @@ public class ChessBoardManager : MonoBehaviour,IMono
 
     public bool CanRetractChess()
     {
+        if(PlayerInfo.gameModel== PlayerInfo.GameModel.ManMachine
+            &&!( MainGameManager.Instance.NowPlayer is Player))
+        {
+            return false;
+        }
         return chessInfoStack.Count > 1;
     }
 
@@ -144,6 +149,7 @@ public class ChessBoardManager : MonoBehaviour,IMono
             item = chessInfoStack.Pop();
             Destroy(item.go);
             GridArray[item.pos.x, item.pos.y] = ChessType.None;
+            MainGameManager.Instance.ChessManager.ChangeNewRedMark();
         }
         return false;
     }

@@ -14,7 +14,7 @@
         Senior,
     }
 
-    public static GameModel gameModel;
-    public static AILevel aiLevel;
-    public static bool isPlayerFirst;
+    public static GameModel gameModel = GameModel.ManMachine;
+    public static AILevel aiLevel = AILevel.Senior;
+    public static bool isPlayerFirst = true;
 }

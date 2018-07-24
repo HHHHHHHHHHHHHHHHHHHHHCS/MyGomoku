@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainUIManager : MonoBehaviour,IMono
+public class MainUIManager : MonoBehaviour, IMono
 {
     private Transform startAnimPanel;
     private Transform gameingPanel;
@@ -22,17 +23,19 @@ public class MainUIManager : MonoBehaviour,IMono
         gameingPanel = root.Find("GameingPanel");
         retractButton = gameingPanel.Find("RetractButton").GetComponent<Button>();
         endPanel = root.Find("EndPanel");
-        whoWinText=endPanel.Find("WhoWinText").GetComponent<Text>();
+        whoWinText = endPanel.Find("WhoWinText").GetComponent<Text>();
         Button backButton = endPanel.Find("BackButton").GetComponent<Button>();
         Button restartButton = endPanel.Find("RestartButton").GetComponent<Button>();
+        Button quitButton = root.Find("QuitButton").GetComponent<Button>();
 
+        quitButton.onClick.AddListener(OnClickQuitButton);
         startButton.onClick.AddListener(OnClickStartButton);
         retractButton.onClick.AddListener(OnClickRetractButton);
         changeFirstButton.onClick.AddListener(OnClickChangeFirstButton);
         //backButton.onClick.AddListener(OnClickRetractButton);
         //restartButton.onClick.AddListener(OnClickRetractButton);
 
-        if(PlayerInfo.gameModel!= PlayerInfo.GameModel.ManMachine)
+        if (PlayerInfo.gameModel != PlayerInfo.GameModel.ManMachine)
         {
             whoFirstText.gameObject.SetActive(false);
             changeFirstButton.gameObject.SetActive(false);
@@ -40,8 +43,10 @@ public class MainUIManager : MonoBehaviour,IMono
 
     }
 
+
     public void OnStart()
     {
+        startAnimPanel.gameObject.SetActive(true);
         SetRetractButton();
     }
 
@@ -57,8 +62,8 @@ public class MainUIManager : MonoBehaviour,IMono
 
     public void SetRetractButton()
     {
-        bool isCan= MainGameManager.Instance.ChessBoardManager.CanRetractChess();
-        if (retractButton.interactable!= isCan)
+        bool isCan = MainGameManager.Instance.ChessBoardManager.CanRetractChess();
+        if (retractButton.interactable != isCan)
         {
             retractButton.interactable = isCan;
         }
@@ -82,6 +87,11 @@ public class MainUIManager : MonoBehaviour,IMono
     {
         MainGameManager.Instance.ChessBoardManager.RetractChess();
         SetRetractButton();
+    }
+
+    private void OnClickQuitButton()
+    {
+        SceneHelper.LoadStartScene();
     }
 
     public void EndGame(ChessType _type)

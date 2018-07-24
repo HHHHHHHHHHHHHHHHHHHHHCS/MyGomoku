@@ -98,9 +98,28 @@ public class ChessManager : MonoBehaviour, IMono
         }
         else
         {
+            if(!redMarkPrefab.activeInHierarchy)
+            {
+                redMarkPrefab.SetActive(true);
+            }
             redMark.transform.position = pos;
         }
     }
 
-
+    public void ChangeNewRedMark()
+    {
+        var manager = MainGameManager.Instance.ChessBoardManager;
+        var stack = manager.chessInfoStack;
+        if (stack.Count==0)
+        {
+            redMarkPrefab.SetActive(false);
+        }
+        else
+        {
+            Vector2Int pointPos = stack.Peek().pos;
+            Vector2 chessPos;
+            MainGameManager.Instance.ChessBoardManager.GetAxisByPoint(pointPos, out chessPos);
+            ChangeRedMark(chessPos);
+        }
+    }
 }

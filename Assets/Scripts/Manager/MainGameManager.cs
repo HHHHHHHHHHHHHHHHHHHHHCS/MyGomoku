@@ -62,8 +62,6 @@ public class MainGameManager : MonoBehaviour
         MainUIManager.OnAwake();
         Player1.OnAwake();
         Player2.OnAwake();
-
-
     }
 
     private void Start()
